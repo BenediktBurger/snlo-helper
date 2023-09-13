@@ -1,16 +1,38 @@
 # -*- coding: utf-8 -*-
 """
 Helper for SNLO simulations ("autoclicker")
+===========================================
+
 
 This file clicks automatically on buttons of SNLO program.
+
+
+Before you can do anything else, you need to set the factors for your display as the positions of
+the buttons changes with resolution and zoom factor. For that, you should
+execute :meth:`set_screenfactors`.
+
+example:
+
+.. code::
+
+    from snlohelper import *  # import everything
+
+    set_screenfactors()  # set the screenfactors.
+
+    # you should open SNLO now.
+    sim = TwoDMixLP()  # choose the function
+    sim.open()  # open the function
+    config = sim.get_configuration()  # read the current configuration
 
 
 created on 25.05.2022 by Jan Frederic Kinder
 """
 
+from enum import StrEnum
 import logging
 import time
 import re
+from typing import Any, Optional
 
 import pyautogui as gui
 import matplotlib.pyplot as plt
@@ -25,20 +47,33 @@ log.addHandler(logging.NullHandler())
 
 
 """
-Setup of the screen and scaling.
+Autoclicker setup
+=================
+
+General methods for the autoclicker
+
+
+Setup of the screen and scaling
+-------------------------------
 
 All positions in code are given on a Full HD (1920 * 1080) screen and dynamically adjusted to the
 screen resolution.
 """
 
 
-def get_screenfactors(standard=[1920, 1080]):
+def get_screenfactors(standard: tuple[float, float] = (1920, 1080)) -> tuple[float, float]:
     """Get the scaling factor from Full HD to the current display resolution."""
     width, height = gui.size()
     return standard[0] / width, standard[1] / height
 
 
-def scale(x: float, y: float = None) -> tuple:
+def set_screenfactors(new_factors: None | tuple[float, float] = None) -> None:
+    """Set the screenfactors to factors or detect them automatically."""
+    global factors
+    factors = get_screenfactors() if new_factors is None else new_factors
+
+
+def scale(x: float | tuple[float, float], y: float | None = None) -> tuple[float, float]:
     """Scale coordinates from the definition standard to the current screen."""
     global factors
     if y is None and isinstance(x, (list, tuple)):
@@ -46,7 +81,7 @@ def scale(x: float, y: float = None) -> tuple:
     return x / factors[0], y / factors[1]
 
 
-def standard_position() -> tuple:
+def standard_position() -> tuple[float, float]:
     """Get the mouse position in standard coordinates (x, y)."""
     point = gui.position()
     global factors
@@ -54,174 +89,13 @@ def standard_position() -> tuple:
 
 
 """
-Begin of dictionaries/lists etc.
+Helper functions
+----------------
+
+GUI functions to get/set content from/into data fields.
 """
 
 
-# coordinates of the functions (in FHD standard)
-_functions_coord = {
-    'Ref. Ind.': [66, 46],
-    'Qmix': [66, 66],
-    'Bmix': [66, 93],
-    'QPM': [66, 120],
-    'Opoangles': [66, 146],
-    'Ncpm': [66, 173],
-    'GVM': [66, 200],
-    'PW-mix-LP': [66, 233],
-    'PW-mix-SP': [66, 260],
-    'PW-mix-BB': [66, 286],
-    '2D-mix-LP': [66, 313],
-    '2D-mix-SP': [66, 340],
-    'PW-cav-LP': [66, 366],
-    'PW-OPO-SP': [66, 393],
-    'PW-OPO-BB': [66, 420],
-    '2D-cav-LP': [66, 446],
-    'Focus': [66, 473],
-    'Cavity': [66, 500],
-}
-
-
-# coordinates of the Focus-function (in FHD standard)
-off = 200, 200
-_dict_focus = {
-    'Wavelength (nm)': [366, off[1] + 20],
-    'Refractive Index': [366, off[1] + 40],
-    'Waist size (mm)': [366, off[1] + 60],
-    'Face to focus (mm)': [366, off[1] + 90],
-    'Dist. to focus (mm)': [366, 300],
-    'Rayleigh z in xtal (mm)': [366, 353],
-    'Beam size (mm)': [366, 380],
-    'Radius of curv. (mm)': [366, 393],
-    'Far field ang air (mrad)': [366, 413],
-    'fwhm': [219, 216],
-    '1e^2': [166, 216]
-}
-
-
-# coordinates of the 2DmixLP-function (in FHD standard)
-_configuration_2dmixlp = {
-    'Wavelengths (nm)': [[403, 186], [470, 186], [536, 186]],
-    'Indexes of refraction': [[403, 200], [470, 200], [536, 200]],
-    'Phases at input (rad)': [[403, 213], [470, 213], [536, 213]],
-    'Input face reflectivity (0-1)': [[403, 226], [470, 226], [536, 226]],
-    'Output face reflectivity (0-1)': [[403, 246], [470, 246], [536, 246]],
-    'Crystal loss (1/mm)': [[403, 260], [470, 260], [536, 260]],
-    'Energy/power (J or W)': [[416, 280], [483, 280], [550, 280]],
-    'Pulse duration (fwhm ns)': [[403, 293], [470, 293], [536, 293]],
-    'Beam diam. (fwhm mm)': [[403, 306], [470, 306], [536, 306]],
-    'Supergaussian coeff.': [[403, 326], [470, 326], [536, 326]],
-    'n2 red1 (sq cm/W)': [[403, 340], [470, 340], [536, 340]],
-    'n2 red2 (sq cm/W)': [[403, 360], [470, 360], [536, 360]],
-    'n2 blue (sq cm/W)': [[403, 373], [470, 373], [536, 373]],
-    'beta red1 (cm/W)': [[403, 393], [470, 393], [536, 393]],
-    'beta red2 (cm/W)': [[403, 406], [470, 406], [536, 406]],
-    'beta blue (cm/W)': [[403, 420], [470, 420], [536, 420]],
-    'Walkoff angles (mrad)': [[403, 440], [470, 440], [536, 440]],
-    'Offset in wo dir. (mm)': [[403, 453], [470, 453], [536, 453]],
-    'Rad. curv. (mm/air´)': [[403, 473], [470, 473], [536, 473]],
-    '# of integ/grid points': [[403, 486], [470, 486], [536, 486]],
-    'Crystal/grid sizes (mm)': [[403, 500], [470, 500], [536, 500]],
-    'Deff (pm/V)': [[403, 520]],
-    'Delta k (1/mm)': [[403, 533]],
-    'Dist. to image (mm)': [[403, 546]],
-    '# time steps': [[403, 566]],
-}
-
-
-_buttons_2dmixlp = {
-    'Accept': [506, 536],
-    'Run': [140, 220],
-    'Change Inputs': [373, 166],
-}
-
-
-# TODO: remove following three definitions from this file (already in modules_JFK)
-def n_lnb(lambda_nm, temp_degc=25, axis='o'):
-    """refractive index of 5% MgO doped congruent LNB (supplied by HC Photonics)
-    data and functions from Gayer et al. (Appl. Optics, 2008)"""
-    if axis == "e":
-        a1, a2, a3, a4, a5, a6 = 5.756, 0.0983, 0.2020, 189.32, 12.52, 1.32e-2
-        b1, b2, b3, b4 = 2.86e-6, 4.7e-8, 6.113e-8, 1.516e-4
-    elif axis == "o":
-        a1, a2, a3, a4, a5, a6 = 5.653, 0.1185, 0.2091, 89.61, 10.85, 1.97e-2
-        b1, b2, b3, b4 = 7.941e-7, 3.134e-8, -4.641e-9, -2.188e-6
-    f = (np.array(temp_degc) - 24.5) * (np.array(temp_degc) + 570.82)
-    lambda_um = np.array(lambda_nm) * 1e-3
-    # Sellmeier equation for lambda in micrometers!
-    return np.sqrt(
-        a1 + b1 * f + (a2 + b2 * f) / (lambda_um ** 2 - (a3 + b3 * f) ** 2)
-        + (a4 + b4 * f) / (lambda_um ** 2 - a5 ** 2) - a6 * lambda_um ** 2)
-
-
-def n_bbo(lambda_nm, axis='o'):
-    """refractive index of BBO
-    data and functions from Zhang et al. (Opt. Comm., 2000)
-    => no temperature dependence!"""
-    if axis == "o":
-        a1, a2, a3, a4, a5, a6 = 2.7359, 0.01878, 0.01822, 0.01471, 0.0006081, 0.00006740
-    elif axis == "e":
-        a1, a2, a3, a4, a5, a6 = 2.3753, 0.01224, 0.01667, 0.01627, 0.0005716, 0.00006305
-    lambda_um = np.array(lambda_nm) * 1e-3
-    # Sellmeier equation for lambda in micrometers!
-    return np.sqrt(
-        a1 + a2 / (lambda_um ** 2 - a3) - a4 * lambda_um ** 2 + a5 * lambda_um ** 4
-        - a6 * lambda_um ** 6)
-
-
-def n(theta, lambda_nm, temp_degc=25, crystal='LNB'):
-    """Return the refractive index under propagation with angle of theta with the crystal c-axis."""
-    if crystal == 'LNB':
-        return (1 / (np.sqrt(
-            np.cos(np.deg2rad(np.array(theta))) ** 2
-            / n_lnb(np.array(lambda_nm), np.array(temp_degc), 'o') ** 2
-            + np.sin(np.deg2rad(np.array(theta))) ** 2
-            / n_lnb(np.array(lambda_nm), np.array(temp_degc), 'e') ** 2)))
-    elif crystal == 'BBO':
-        return (1 / (np.sqrt(
-            np.cos(np.deg2rad(np.array(theta))) ** 2
-            / n_bbo(np.array(lambda_nm), 'o') ** 2
-            + np.sin(np.deg2rad(np.array(theta))) ** 2
-            / n_bbo(np.array(lambda_nm), 'e') ** 2)))
-
-    else:
-        print('no Sellmeier equation for ' + crystal + '!')
-
-
-def pm_theta(idler_nm, pump_nm, temp_degc=25, crystal='LNB'):
-    """ returns the angle, which provides critical phase matching in MgO:LNB"""
-    signal_nm = m.idler2signal(idler_nm, pump_nm)
-    if crystal == 'LNB':
-        n1 = n_lnb(idler_nm, temp_degc, 'o')
-        n2 = n_lnb(signal_nm, temp_degc, 'o')
-        n_pump_e = n_lnb(pump_nm, temp_degc, 'e')
-        n_pump_o = n_lnb(pump_nm, temp_degc, 'o')
-    elif crystal == 'BBO':
-        n1 = n_bbo(idler_nm, 'o')
-        n2 = n_bbo(signal_nm, 'o')
-        n_pump_e = n_bbo(pump_nm, 'e')
-        n_pump_o = n_bbo(pump_nm, 'o')
-    n_soll = (n1 / idler_nm + n2 / signal_nm) * pump_nm
-
-    return 180 / np.pi * np.arctan(
-        n_pump_e / n_pump_o
-        * np.sqrt((n_soll ** 2 - n_pump_o ** 2) / (n_pump_e ** 2 - n_soll ** 2)))
-
-
-def pm_theta_bbo(red1_nm, red2_nm):
-    """ returns the angle, which provides critical phase matching in MgO:LNB"""
-    blue_nm = 1 / (1 / red1_nm + 1 / red2_nm)
-    n1 = n_bbo(red1_nm, 'o')
-    n2 = n_bbo(red2_nm, 'e')
-    n_blue_e = n_bbo(blue_nm, 'e')
-    n_blue_o = n_bbo(blue_nm, 'o')
-    n_soll = (n1 / red1_nm + n2 / red2_nm) * blue_nm
-
-    return 180 / np.pi * np.arctan(
-        n_blue_e / n_blue_o
-        * np.sqrt((n_soll ** 2 - n_blue_o ** 2) / (n_blue_e ** 2 - n_soll ** 2)))
-
-
-# Helper functions
 def get_content(position: tuple) -> str:
     """Get the content of the field at position via double click.
 
@@ -251,7 +125,7 @@ def get_value_complete(position: tuple) -> float:
     return float(get_content_complete(position))
 
 
-def set_value(position: tuple, value) -> None:
+def set_value(position: tuple, value: Any) -> None:
     """move to position, insert value as string"""
     gui.doubleClick(*scale(*position))
     gui.press('delete')
@@ -259,18 +133,98 @@ def set_value(position: tuple, value) -> None:
     gui.write(str(value))
 
 
-# SNLO calls
-def open_function(key: str) -> None:
+"""
+SNLO configuration
+==================
+
+
+Dictionaries of button positions
+--------------------------------
+"""
+
+
+# coordinates of the functions (in FHD standard)
+_functions_coord = {
+    'Ref. Ind.': [66, 46],
+    'Qmix': [66, 66],
+    'Bmix': [66, 93],
+    'QPM': [66, 120],
+    'Opoangles': [66, 146],
+    'Ncpm': [66, 173],
+    'GVM': [66, 200],
+    'PW-mix-LP': [66, 233],
+    'PW-mix-SP': [66, 260],
+    'PW-mix-BB': [66, 286],
+    '2D-mix-LP': [66, 313],
+    '2D-mix-SP': [66, 340],
+    'PW-cav-LP': [66, 366],
+    'PW-OPO-SP': [66, 393],
+    'PW-OPO-BB': [66, 420],
+    '2D-cav-LP': [66, 446],
+    'Focus': [66, 473],
+    'Cavity': [66, 500],
+}
+
+
+class Functions(StrEnum):
+    """Enum for the functions."""
+    REF_INDEX = 'Ref. Ind.'
+    QMIX = 'Qmix'
+    BMIX = 'Bmix'
+    QPM = 'QPM'
+    OPO_ANGLES = 'Opoangles'
+    NCPM = 'Ncpm'
+    GVM = 'GVM'
+    PW_MIX_LP = 'PW-mix-LP'
+    PW_MIX_SP = 'PW-mix-SP'
+    PW_MIX_BB = 'PW-mix-BB'
+    TWOD_MIX_LP = '2D-mix-LP'
+    TWOD_MIX_SP = '2D-mix-SP'
+    PW_CAV_LP = 'PW-cav-LP'
+    PW_OPO_SP = 'PW-OPO-SP'
+    PW_OPO_BB = 'PW-OPO-BB'
+    TWOD_CAV_LP = '2D-cav-LP'
+    FOCUS = 'Focus'
+    CAVITY = 'Cavity'
+
+
+# coordinates of the Focus-function (in FHD standard)
+_off = 200, 200  # offset
+_dict_focus = {
+    'Wavelength (nm)': [366, _off[1] + 20],
+    'Refractive Index': [366, _off[1] + 40],
+    'Waist size (mm)': [366, _off[1] + 60],
+    'Face to focus (mm)': [366, _off[1] + 90],
+    'Dist. to focus (mm)': [366, 300],
+    'Rayleigh z in xtal (mm)': [366, 353],
+    'Beam size (mm)': [366, 380],
+    'Radius of curv. (mm)': [366, 393],
+    'Far field ang air (mrad)': [366, 413],
+    'fwhm': [219, 216],
+    '1e^2': [166, 216]
+}
+
+
+"""
+SNLO functions
+--------------
+
+Functions to access SNLO buttons/configurations.
+"""
+
+
+def open_function(key: str | Functions) -> None:
     """opens function according to key"""
     gui.click(*scale(*_functions_coord[key]))
 
 
-def focus(wavelength_nm: float, ref_index: float, fwhm_mm: float, focus_pos_mm: float) -> tuple:
+def focus(wavelength_nm: float, ref_index: float, fwhm_mm: float, focus_pos_mm: float
+          ) -> tuple[float, float, float, float]:
     """calls focus function to determine parameters for the radius of curvature.
     inputs: wavelength_nm, ref_index, waist_size_mm (FWHM), focus_pos_mm
     returns: zr, diameter (FWHM), radcurv, angle
     """
-    open_function('Focus')
+    open_function(Functions.FOCUS)
     gui.leftClick(*scale(*_dict_focus['fwhm']))
     set_value(_dict_focus['Wavelength (nm)'], wavelength_nm)
     set_value(_dict_focus['Refractive Index'], ref_index)
@@ -287,39 +241,57 @@ def focus(wavelength_nm: float, ref_index: float, fwhm_mm: float, focus_pos_mm: 
     return zr, diameter, radcurv, angle
 
 
-class TwoDMixLP:
-    """The '2D-mix-LP' method."""
+class MixMethods:
+    """Parent class for mix methods.
+
+    Subclass it for specific methods. You should define the positions and the result interpretation.
+    """
+    _function: Functions
+    # Positions
+    _accept_pos: tuple[float, float]
+    _run_pos: tuple[float, float]
+    _change_inputs_pos: tuple[float, float]
+    _result_pos: tuple[float, float]  # of the results field
+    _configuration_pos: dict[str, float | list[float]]  # of the configuration fields
 
     def open(self):
         """Open the function."""
-        open_function("2D-mix-LP")
+        open_function(self._function)
 
     def accept(self):
         """Click 'Accept'."""
-        gui.click(*scale(506, 536))
+        gui.click(*scale(*self._accept_pos))
 
     def run(self):
         """Click 'Run'."""
-        gui.click(*scale(140, 220))
+        gui.click(*scale(*self._run_pos))
 
     def change_inputs(self):
         """Click 'Change Inputs'."""
-        gui.click(*scale(373, 166))
+        gui.click(*scale(*self._change_inputs_pos))
 
-    def configure(self, data: dict = None):
-        """Configure the values and leave the config window open."""
-        open_function("2D-mix-LP")
+    def configure(self, data: Optional[dict[str, Any]] = None) -> None:
+        """Configure the values and leave the config window open.
+
+        If any value is "None", that field will not be changed. This is useful, if you want to
+        change a single value in a row.
+        For example `data={'Wavelengths (nm)': [1064.5, None, None]}` will set the first wavelength
+        to 1064.5 nm while leaving the other wavelengths untouched.
+        """
+        self.open()
         if data is None:
             return
         for key, value in data.items():
-            positions = _configuration_2dmixlp[key]
+            positions = self._configuration_pos[key]
             for i, val in enumerate(value):
                 if val is not None:
                     set_value(positions[i], val)
 
-    def get_configuration(self) -> dict:
+    def get_configuration(self) -> dict[str, Any]:
+        """Read the current configuration."""
+        self.open()
         data = {}
-        for key, positions in _configuration_2dmixlp.items():
+        for key, positions in self._configuration_pos.items():
             d = []
             for pos in positions:
                 val = get_content_complete(pos)
@@ -330,33 +302,78 @@ class TwoDMixLP:
             data[key] = d
         return data
 
-    def run_and_read(self, waiting_time: float = 1, max_tries: int = 10, interval: float = 0.5
-                     ) -> dict:
-        """Run an analysis and return the result."""
-        gui.click(*scale(*_buttons_2dmixlp['Run']))
-        time.sleep(waiting_time)
+    def interpret_results(self, rows: list[str]) -> dict[str, Any]:
+        """Interpret the results and return them as a dictionary."""
+        raise NotImplementedError("Implement in subclass.")
 
+    def run_and_read(self, waiting_time: float = 1, max_tries: int = 10, interval: float = 0.5,
+                     successful_line_count: int = 3) -> dict[str, Any]:
+        """Run an analysis and return the result."""
+        self.run()
+        time.sleep(waiting_time)
         for _ in range(max_tries):
-            entries = get_content_complete((133, 293)).split("\r\n")
-            if len(entries) > 3:
+            rows = get_content_complete(self._result_pos).split("\r\n")
+            if len(rows) > successful_line_count:
                 break
             time.sleep(interval)
 
         # interpret results and save as dictionary:
-        return {
-            'Input peak irradiance (W/sq cm)': [float(i) for i in entries[0].split()[5:]],
-            'Input peak fluence (J/sq cm)': [float(i) for i in entries[1].split()[6:]],
-            'Input peak powers (W)': [float(i) for i in entries[2].split()[5:]],
-            'Output peak fluence (J/sq cm)': [float(i) for i in entries[3].split()[6:]],
-            'Output pulse energy (mJ)': [float(i) for i in entries[4].split()[5:]],
-            'So (W/sq cm)': float(entries[5].split()[4])
-        }
+        return self.interpret_results(rows)
 
-    def configure_run_read(self, data: dict = None, **kwargs) -> dict:
+    def configure_run_read(self, data: dict = None, **kwargs) -> dict[str, float | list[float]]:
         """Configure and run an analysis and return the result."""
         self.configure(data)
         self.accept()
         return self.run_and_read(**kwargs)
+
+
+class TwoDMixLP(MixMethods):
+    """The '2D-mix-LP' method."""
+    _function = Functions.TWOD_MIX_LP
+    _accept_pos = (506, 536)
+    _run_pos = (140, 220)
+    _change_inputs_pos = (373, 166)
+    _result_pos = (133, 293)
+
+    # coordinates of the 2DmixLP-function (in FHD standard)
+    _configuration_pos = {
+        'Wavelengths (nm)': [[403, 186], [470, 186], [536, 186]],
+        'Indexes of refraction': [[403, 200], [470, 200], [536, 200]],
+        'Phases at input (rad)': [[403, 213], [470, 213], [536, 213]],
+        'Input face reflectivity (0-1)': [[403, 226], [470, 226], [536, 226]],
+        'Output face reflectivity (0-1)': [[403, 246], [470, 246], [536, 246]],
+        'Crystal loss (1/mm)': [[403, 260], [470, 260], [536, 260]],
+        'Energy/power (J or W)': [[416, 280], [483, 280], [550, 280]],
+        'Pulse duration (fwhm ns)': [[403, 293], [470, 293], [536, 293]],
+        'Beam diam. (fwhm mm)': [[403, 306], [470, 306], [536, 306]],
+        'Supergaussian coeff.': [[403, 326], [470, 326], [536, 326]],
+        'n2 red1 (sq cm/W)': [[403, 340], [470, 340], [536, 340]],
+        'n2 red2 (sq cm/W)': [[403, 360], [470, 360], [536, 360]],
+        'n2 blue (sq cm/W)': [[403, 373], [470, 373], [536, 373]],
+        'beta red1 (cm/W)': [[403, 393], [470, 393], [536, 393]],
+        'beta red2 (cm/W)': [[403, 406], [470, 406], [536, 406]],
+        'beta blue (cm/W)': [[403, 420], [470, 420], [536, 420]],
+        'Walkoff angles (mrad)': [[403, 440], [470, 440], [536, 440]],
+        'Offset in wo dir. (mm)': [[403, 453], [470, 453], [536, 453]],
+        'Rad. curv. (mm/air´)': [[403, 473], [470, 473], [536, 473]],
+        '# of integ/grid points': [[403, 486], [470, 486], [536, 486]],
+        'Crystal/grid sizes (mm)': [[403, 500], [470, 500], [536, 500]],
+        'Deff (pm/V)': [[403, 520]],
+        'Delta k (1/mm)': [[403, 533]],
+        'Dist. to image (mm)': [[403, 546]],
+        '# time steps': [[403, 566]],
+    }
+
+    def interpret_results(self, rows: list[str]) -> dict[str, float | list[float]]:
+        """Interpret the results."""
+        return {
+            'Input peak irradiance (W/sq cm)': [float(i) for i in rows[0].split()[5:]],
+            'Input peak fluence (J/sq cm)': [float(i) for i in rows[1].split()[6:]],
+            'Input peak powers (W)': [float(i) for i in rows[2].split()[5:]],
+            'Output peak fluence (J/sq cm)': [float(i) for i in rows[3].split()[6:]],
+            'Output pulse energy (mJ)': [float(i) for i in rows[4].split()[5:]],
+            'So (W/sq cm)': float(rows[5].split()[4])
+        }
 
 
 def import_snlo_file(file_name, file_path='C:/SNLO/'):
@@ -499,5 +516,5 @@ if __name__ == "__main__":
     if len(log.handlers) < 2:
         log.addHandler(logging.StreamHandler())
     log.setLevel(logging.INFO)
-    factors = get_screenfactors()
+    set_screenfactors()
     log.info(f"Setting screenfactors to {factors}.")

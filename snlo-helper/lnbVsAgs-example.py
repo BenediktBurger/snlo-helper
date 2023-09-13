@@ -5,25 +5,29 @@ Created on Thu May 25 13:01:56 2023
 @author: moneke
 """
 
-# %% imports
-
-from time import perf_counter
+# %% import modules
 
 import numpy as np
 import matplotlib as plt
 
-from snlohelper import *
+from snlohelper import *  # noqa
+from snlohelper import set_screenfactors, TwoDMixLP
 
-# %% Setup
+# %% Setup screenfactor and simulation model
 
+set_screenfactors()
 
 sim = TwoDMixLP()
 sim.open()
 
-start = sim.get_configuration()
+start = sim.get_configuration()  # store the start configuration
 
 
-# %%%
+# %% runt the simulation
+"""
+Calculate the output pulse energy for different crystal loss values.
+"""
+
 
 # Parameters
 absorption = np.linspace(0, 41e-1, 30)
@@ -35,46 +39,12 @@ for a in absorption:
     results.append(r['Output pulse energy (mJ)'][0])
     print(a, results[-1])
 
-
-# %% Test
-
-interval = 0#.5
-s0 = perf_counter()
-gui.click(*scale(133,293))
-gui.hotkey("ctrl", "home")
-gui.hotkey("ctrl", "shiftleft", "shiftright", "end")
-# gui.hotkey('ctrl', 'c')
-
-print(perf_counter()-s0)
-
-
-
-s0 = perf_counter()
-gui.rightClick(*scale(133,293))
-gui.press(6 * ['down'])
-gui.press('enter')
-# gui.hotkey('ctrl', 'c')
-
-print(perf_counter()-s0)
-
-
-
-# %%
-
-
-with gui.hold("shift", interval=interval):
-    with gui.hold("ctrl", interval=interval):
-        gui.press("end", interval=interval)
-# 
-
-
-#%%
-gui.hotkey("shift", "a")
-
+print(results)
 
 # %%
 
 results = []
+
 
 #%%
 
@@ -92,7 +62,7 @@ for v in pe:
     results.append(sim.configure_run_read({'Energy/power (J or W)': [None, None, v]})['Output pulse energy (mJ)'])
 
 
-# %%
+# %% Plot
 
 plt.figure()
 ax = plt.gca()

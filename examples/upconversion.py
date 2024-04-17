@@ -7,7 +7,7 @@ created on 25.05.2022 by Jan Frederic Kinder
 import pickle
 import pyautogui as gui
 import matplotlib.pyplot as plt
-import modules_JFK as m  # module from NLOQO/EG-Labor/DataAnalysis, check PYTHONPATH in Spyder
+import analysis.modules_JFK as m  # module from NLOQO/EG-Labor/DataAnalysis, check PYTHONPATH in Spyder
 import numpy as np
 import scipy
 from socket import gethostname

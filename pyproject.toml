@@ -1,0 +1,30 @@
+[project]
+name = "snlo-helper"
+dynamic = ["version"]
+
+requires-python = ">=3.9"
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "pyautogui",
+    "pyperclip",
+]
+readme = "README.md"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "setuptools_scm>=7.0"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.ruff]
+select = ["E", "F", "W"]
+line-length = 100
+exclude = [
+    ".git",
+    ".venv",
+    "__pypackages__",
+    "__pycache__",
+    "build",
+    "dist",
+    "docs/conf.py",
+]

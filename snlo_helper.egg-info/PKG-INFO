@@ -1,3 +1,13 @@
+Metadata-Version: 2.1
+Name: snlo-helper
+Version: 0.0.0
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: pyautogui
+Requires-Dist: pyperclip
+
 # SNLO Helper
 
 Utilises SNLO software for simulation of nonlinear processes in crystals.
@@ -10,7 +20,7 @@ The autoclicker can be interrupted by moving the mouse into the top right corner
 
 ## Installation
 
-Install it in this folder via `pip install -e .`
+Install all the requirements in requirements.txt, for example with pip via `pip install -r requirements.txt` (in this folder).
 
 
 ## Usage
@@ -18,4 +28,4 @@ Install it in this folder via `pip install -e .`
 - You can execute `snlohelper.py` in a console, which imports all the methods and sets the screen resolution factor.
 - Alternatively, you can import methods from `snlohelper`. In this case you have to set the screen resolution with `set_screenfactors()` yourself.
 
-Use the methods as convenient.
+Use the methods as conventient.

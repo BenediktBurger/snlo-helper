@@ -10,7 +10,7 @@ The autoclicker can be interrupted by moving the mouse into the top right corner
 
 ## Installation
 
-Install it in this folder via `pip install -e .`
+Install it in this folder via `pip install -e .` or via `pip install git+https://git.rwth-aachen.de/nloqo/snlo-helper.git` to download it in the background and install it.
 
 
 ## Usage

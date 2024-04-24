@@ -1,21 +1,41 @@
-# SNLO Helper
+# SNLO-Helper
 
-Utilises SNLO software for simulation of nonlinear processes in crystals.
+SNLO-Helper helps to use [SNLO](https://as-photonics.com/products/snlo/) software for simulation of nonlinear optical processes in crystals.
 
-An autoclicker clicks different buttons/fills fields in order to automate SNLO simulations.
+An autoclicker clicks different buttons and fills fields in order to automate SNLO simulations.
+Afterwards, it can retrieve the results and return them as a dictionary.
 
-Beware, that the script does its work with your mouse and keyboard, so you should not interact with the computer in the meanwhile.
+Note that the script does use your mouse and keyboard, so you should not interact with the computer at the same time.
 The autoclicker can be interrupted by moving the mouse into the top right corner of the screen.
 
 
 ## Installation
 
-Install it in this folder via `pip install -e .` or via `pip install git+https://git.rwth-aachen.de/nloqo/snlo-helper.git` to download it in the background and install it.
+Install it executing `pip install -e .` in this folder or via `pip install git+https://git.rwth-aachen.de/nloqo/snlo-helper.git` to download it in the background and install it.
 
 
 ## Usage
 
-- You can execute `snlohelper.py` in a console, which imports all the methods and sets the screen resolution factor.
-- Alternatively, you can import methods from `snlohelper`. In this case you have to set the screen resolution with `set_screenfactors()` yourself.
+Import `snlohelper.snlo` as a starting point.
+If your screen resolution differs from HD, you have to set screenfactors with `utils.set_screenfactors`.
+That will rescale all positions to your current screen resolution.
 
-Use the methods as convenient.
+Here is a small snippet how to do a 2D mix of long pulses:
+```
+from snlohelper import snlo
+
+snlo.utils.set_screenfactors()
+
+sim = snlo.TwoDMixLP()  # create a class for 2D mix
+sim.open()  # click the corresponding button to open 2D mix
+sim.configure({"Wavelengths (nm)": [1064.5, None, None]})  # configure it
+result = sim.run_and_read()  # run it
+print(result)
+```
+
+For more examples see the `examples` folder.
+
+
+## Contribution
+
+You are welcome to contribute to this library. Just open an issue for suggestions or bug reports and open a pull request for code contributions.

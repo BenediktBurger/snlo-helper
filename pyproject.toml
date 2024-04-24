@@ -1,15 +1,19 @@
 [project]
 name = "snlo-helper"
 dynamic = ["version"]
+description = "An autoclicker to automatically configure and read SNLO."
 
 requires-python = ">=3.9"
 dependencies = [
-    "matplotlib",
-    "numpy",
     "pyautogui",
     "pyperclip",
 ]
 readme = "README.md"
+
+
+[project.optional-dependencies]
+full = ["numpy"]
+
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel", "setuptools_scm>=7.0"]

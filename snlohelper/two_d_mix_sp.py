@@ -8,6 +8,7 @@ class TwoDMixSP(MixMethods):
     _function = Functions.TWOD_MIX_SP
     _accept_pos = (506, 600)
     _run_pos = (140, 200)
+    _close_pos = (540, 140)
     _change_inputs_pos = (150, 266)
     _result_pos = (133, 293)
 

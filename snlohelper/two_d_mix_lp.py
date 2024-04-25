@@ -8,6 +8,7 @@ class TwoDMixLP(MixMethods):
     _function = Functions.TWOD_MIX_LP
     _accept_pos = (506, 520)
     _run_pos = (140, 220)
+    _close_pos = (540, 140)
     _change_inputs_pos = (373, 166)
     _result_pos = (133, 293)
 
@@ -31,7 +32,7 @@ class TwoDMixLP(MixMethods):
         "beta blue (cm/W)": [(400, 420), (460, 420), (520, 420)],
         "Walkoff angles (mrad)": [(400, 440), (460, 440), (520, 440)],
         "Offset in wo dir. (mm)": [(400, 453), (460, 453), (520, 453)],
-        "Rad. curv. (mm/air´)": [(400, 473), (460, 473), (520, 473)],
+        "Rad. curv. (mm/air)": [(400, 473), (460, 473), (520, 473)],
         "# of integ/grid points": [(400, 486), (460, 486), (520, 486)],
         "Crystal/grid sizes (mm)": [(400, 500), (460, 500), (520, 500)],
         "Deff (pm/V)": [(400, 520)],

@@ -1,6 +1,6 @@
 from typing import Any, Optional, Protocol
 
-from .utils import Position, gui, scale
+from .utils import Point, gui, scale
 from .base_function import BaseFunction
 
 
@@ -10,8 +10,8 @@ class MixMethods(BaseFunction, Protocol):
     Subclass it for specific methods. You should define the positions and the result interpretation.
     """
 
-    _accept_pos: Position
-    _change_inputs_pos: Position
+    _accept_pos: Point
+    _change_inputs_pos: Point
 
     def accept(self) -> None:
         """Click 'Accept'."""

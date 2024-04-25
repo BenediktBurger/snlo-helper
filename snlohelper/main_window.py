@@ -4,10 +4,10 @@ The SNLO main window
 
 from enum import StrEnum
 
-from .utils import Position, gui, scale
+from .utils import Point, gui, scale
 
 # coordinates of the functions (in FHD standard)
-_functions_coord: dict[str, Position] = {
+_functions_coord: dict[str, Point] = {
     "Ref. Ind.": (66, 46),
     "Qmix": (66, 66),
     "Bmix": (66, 93),

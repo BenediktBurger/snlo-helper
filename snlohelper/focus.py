@@ -1,9 +1,9 @@
 from .main_window import open_function, Functions
-from .utils import Position, gui, scale, set_value, get_value_complete
+from .utils import Point, gui, scale, set_value, get_value_complete
 
 
 # coordinates of the Focus-function (in FHD standard)
-_dict_focus: dict[str, Position] = {
+_dict_focus: dict[str, Point] = {
     "Wavelength (nm)": (366, 220),
     "Refractive Index": (366, 240),
     "Waist size (mm)": (366, 260),

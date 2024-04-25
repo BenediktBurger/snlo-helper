@@ -6,7 +6,7 @@ General methods for the autoclicker
 """
 
 import logging
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 import pyautogui as gui
 from pyperclip import paste
@@ -15,7 +15,7 @@ from pyperclip import paste
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
-Position = tuple[float, float]
+Point = Union[gui.Point, tuple[float, float]]
 
 
 """
@@ -28,7 +28,7 @@ screen resolution.
 """
 
 
-def get_screenfactors(standard: Position = (1920, 1080)) -> Position:
+def get_screenfactors(standard: Point = (1920, 1080)) -> Point:
     """Get the scaling factor from Full HD to the current display resolution."""
     width, height = gui.size()
     return standard[0] / width, standard[1] / height
@@ -41,7 +41,7 @@ def set_screenfactors(new_factors: Optional[tuple[float, float]] = None) -> tupl
     return factors
 
 
-def scale(x: float | Position, y: float | None = None) -> Position:
+def scale(x: float | Point, y: float | None = None) -> Point:
     """Scale coordinates from the definition standard to the current screen."""
     global factors
     if isinstance(x, (list, tuple)):
@@ -59,7 +59,7 @@ def scale(x: float | Position, y: float | None = None) -> Position:
         return x / factors[0], y / factors[1]
 
 
-def standard_position() -> Position:
+def standard_position() -> Point:
     """Get the mouse position in standard coordinates (x, y)."""
     point = gui.position()
     global factors
@@ -74,7 +74,7 @@ GUI functions to get/set content from/into data fields.
 """
 
 
-def get_content(position: Position) -> str:
+def get_content(position: Point) -> str:
     """Get the content of the field at position via double click.
 
     If there is a "-" in the text, the extraction fails!
@@ -84,12 +84,12 @@ def get_content(position: Position) -> str:
     return paste()
 
 
-def get_value(position: Position) -> float:
+def get_value(position: Point) -> float:
     """Move to position, retrieve value and return float."""
     return float(get_content(position))
 
 
-def get_content_complete(position: Position) -> str:
+def get_content_complete(position: Point) -> str:
     """Go to position and retrieve the content there, marking all."""
     gui.click(*scale(*position))
     gui.hotkey("ctrl", "home")
@@ -99,12 +99,12 @@ def get_content_complete(position: Position) -> str:
     return paste()
 
 
-def get_value_complete(position: Position) -> float:
+def get_value_complete(position: Point) -> float:
     """Move to position, retrieve value via context menu (slower) and return float."""
     return float(get_content_complete(position))
 
 
-def set_value(position: Position, value: Any) -> None:
+def set_value(position: Point, value: Any) -> None:
     """Move to position, insert value as string."""
     gui.doubleClick(*scale(*position))
     gui.press("delete")

@@ -1,7 +1,7 @@
 import time
 from typing import Any, Optional, Protocol
 
-from .utils import Position, gui, scale, get_content_complete, set_value
+from .utils import Point, gui, scale, get_content_complete, set_value
 from .main_window import Functions, open_function
 
 
@@ -10,10 +10,10 @@ class BaseFunction(Protocol):
 
     _function: Functions
     # Positions
-    _run_pos: Position  # of the run field
-    _result_pos: Position  # of the results field
-    _close_pos: Position
-    _configuration_pos: dict[str, list[Position]]  # of the configuration fields
+    _run_pos: Point  # of the run field
+    _result_pos: Point  # of the results field
+    _close_pos: Point
+    _configuration_pos: dict[str, list[Point]]  # of the configuration fields
 
     def open(self) -> None:
         """Open the function."""
@@ -112,11 +112,11 @@ class BaseFunction(Protocol):
 
 
 def generate_position_dict(
-    first_position: Position,
+    first_position: Point,
     configuration_names: list[str],
     columns: int = 3,
     column_distance: int = 60,
-) -> dict[str, list[Position]]:
+) -> dict[str, list[Point]]:
     """Generate a position dictionary for functions.
 
     This utility makes it easier to generate a position matrix with three fields per entry.

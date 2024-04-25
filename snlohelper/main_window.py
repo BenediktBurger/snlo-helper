@@ -55,3 +55,7 @@ class Functions(StrEnum):
 def open_function(key: str | Functions) -> None:
     """opens function according to key"""
     gui.click(*scale(*_functions_coord[key]))
+
+
+def close_snlo() -> None:
+    gui.click(*scale(95, 14))

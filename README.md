@@ -16,9 +16,13 @@ Install it executing `pip install -e .` in this folder or via `pip install git+h
 
 ## Usage
 
-Import `snlohelper.snlo` as a starting point.
-If your screen resolution differs from HD, you have to set screenfactors with `utils.set_screenfactors`.
-That will rescale all positions to your current screen resolution.
+### Quick Start
+
+1. Start SNLO on your computer
+2. Import `snlohelper.snlo` as a starting point.
+3. If your screen resolution differs from HD, you have to set screenfactors with `utils.set_screenfactors`.
+   That will rescale all positions to your current screen resolution.
+4. Open the desired method and execute it.
 
 Here is a small snippet how to do a 2D mix of long pulses:
 ```
@@ -34,6 +38,18 @@ print(result)
 ```
 
 For more examples see the `examples` folder.
+
+
+### General usage
+
+* The `main_window.open_function` method allows to open any SNLO function of the main window.
+* For several functions exists a module containing a class, which in turn allows to configure the function, to run the calculation, and to extract the result.
+  1. You start that class, for example `mix = two_d_mix_lp.TwoDMixLp()`.
+  2. You can configure it giving a configuration dictionary (the keys correspond to the names) with `mix.configure({"Wavelengths": [1064, None, None]})`
+  3. You can run it with `mix.run()`
+  4. With `results = mix.read_results()` you can extract the resulting text.
+  5. With `result_dict = mix.interpret_results(results)` you get a dictionary of the data
+  6. There are convenience methods like `mix.run_and_read` which runs and returns the dictionary, or even `mix.configure_run_read`, which does all of above steps in one.
 
 
 ## Contribution

@@ -3,6 +3,7 @@ import logging
 from . import utils
 
 from .main_window import open_function, Functions  # noqa: F401
+from .ref_index import RefractiveIndex  # noqa: F401
 from .two_d_mix_lp import TwoDMixLP  # noqa: F401
 from .two_d_mix_sp import TwoDMixSP  # noqa: F401
 from .focus import focus  # noqa: F401

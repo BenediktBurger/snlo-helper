@@ -28,6 +28,12 @@ class RefractiveIndex(BaseFunction):
     def refractive_indices(
         self, Crystal=None, Temperature=None, theta=None, phi=None, Wavelength=None
     ) -> list[float]:
+        """Get the refractive indices (o, e).
+
+        For the crystal, you have to use letters to press, for example "BB" to select the second
+        crystal starting with a "B". In order to ensure, that it starts correctly, use any other
+        letter first, e.g. "ABB".
+        """
         kwargs = {
             "Crystal": Crystal,
             "Temperature": Temperature,

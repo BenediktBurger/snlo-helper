@@ -1,4 +1,7 @@
-from .main_window import open_function, Functions
+from typing import Optional
+
+from .base_function import BaseFunction
+from .functions import open_function, Functions
 from .utils import Point, gui, scale, set_value, get_value_complete
 
 
@@ -41,3 +44,37 @@ def focus(
     radcurv = get_value_complete(_dict_focus["Radius of curv. (mm)"])
     angle = get_value_complete(_dict_focus["Far field ang air (mrad)"])
     return zr, diameter, radcurv, angle
+
+
+class Focus(BaseFunction):
+    _function = Functions.FOCUS
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._configuration_pos = {key: [value] for key, value in _dict_focus.items()}
+
+    def read_results(self) -> list[str]:
+        return super().read_results()
+
+    def focus(
+        self,
+        wavelength_nm: Optional[float] = None,
+        ref_index: Optional[float] = None,
+        fwhm_mm: Optional[float] = None,
+        focus_pos_mm: Optional[float] = None,
+    ) -> tuple[float, float, float, float]:
+        self.configure(
+            {
+                "Wavelength (nm)": wavelength_nm,
+                "Refractive Index": ref_index,
+                "Waist size (mm)": fwhm_mm,
+                # Set face to focus and dist to focus to same value gives values in air at face
+                "Face to focus (mm)": focus_pos_mm,
+                "Dist. to focus (mm)": focus_pos_mm,
+            }
+        )
+        zr = get_value_complete(_dict_focus["Rayleigh z in xtal (mm)"])
+        diameter = get_value_complete(_dict_focus["Beam size (mm)"])
+        radcurv = get_value_complete(_dict_focus["Radius of curv. (mm)"])
+        angle = get_value_complete(_dict_focus["Far field ang air (mrad)"])
+        return zr, diameter, radcurv, angle

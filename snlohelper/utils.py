@@ -28,8 +28,8 @@ screen resolution.
 """
 
 
-def get_screenfactors(standard: Point = (1920, 1080)) -> Point:
-    """Get the scaling factor from Full HD to the current display resolution."""
+def read_display_screenfactors(standard: Point = (1920, 1080)) -> Point:
+    """Read the scaling factor from Full HD to the current display resolution."""
     width, height = gui.size()
     return standard[0] / width, standard[1] / height
 
@@ -37,11 +37,20 @@ def get_screenfactors(standard: Point = (1920, 1080)) -> Point:
 def set_screenfactors(new_factors: Optional[tuple[float, float]] = None) -> tuple[float, float]:
     """Set the screenfactors to `new_factors` or detect them automatically."""
     global factors
-    factors = get_screenfactors() if new_factors is None else new_factors
+    factors = read_display_screenfactors() if new_factors is None else new_factors
     return factors
 
 
-def scale(x: float | Point, y: float | None = None) -> Point:
+def get_screenfactors() -> Optional[tuple[float, float]]:
+    """Get the current screenfactors or None, if not yet set."""
+    global factors
+    try:
+        return factors
+    except NameError:
+        return None
+
+
+def scale(x: Union[float, Point], y: Optional[float] = None) -> Point:
     """Scale coordinates from the definition standard to the current screen."""
     global factors
     if isinstance(x, (list, tuple)):
@@ -110,3 +119,11 @@ def set_value(position: Point, value: Any) -> None:
     gui.press("delete")
     gui.doubleClick()
     gui.write(str(value))
+
+
+def alt_tab() -> None:
+    gui.hotkey("alt", "tab")
+
+
+def get_position() -> Point:
+    return gui.position()

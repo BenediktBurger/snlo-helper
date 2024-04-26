@@ -2,7 +2,7 @@ import time
 from typing import Any, Optional, Protocol
 
 from .utils import Point, gui, scale, get_content_complete, set_value
-from .main_window import Functions, open_function
+from .functions import Functions, open_function
 
 
 class BaseFunction(Protocol):

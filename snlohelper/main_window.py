@@ -2,7 +2,7 @@
 The SNLO main window
 """
 
-from typing import Optional
+from typing import Optional, TypeVar
 
 from .utils import gui, scale, get_screenfactors, set_screenfactors, Point
 from .functions import Functions, open_function
@@ -20,6 +20,7 @@ function_classes = {
     Functions.FOCUS: Focus,
 }
 
+FunctionClass = TypeVar("FunctionClass")
 
 class MainWindow:
     _close_pos = (95, 14)
@@ -37,3 +38,20 @@ class MainWindow:
         open_function(key)
         if key in function_classes:
             return function_classes[key]()
+
+    def _open_function(self, function_class: type[FunctionClass]) -> FunctionClass:
+        function = function_class()
+        function.open()  # type: ignore
+        return function
+
+    def open_refractive_index(self) -> RefractiveIndex:
+        return self._open_function(RefractiveIndex)
+
+    def open_two_d_mix_lp(self) -> TwoDMixLP:
+        return self._open_function(TwoDMixLP)
+
+    def open_two_d_mix_sp(self) -> TwoDMixSP:
+        return self._open_function(TwoDMixSP)
+
+    def open_focus(self) -> Focus:
+        return self._open_function(Focus)

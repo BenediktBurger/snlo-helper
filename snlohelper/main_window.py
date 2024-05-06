@@ -22,6 +22,7 @@ function_classes = {
 
 FunctionClass = TypeVar("FunctionClass")
 
+
 class MainWindow:
     _close_pos = (95, 14)
 

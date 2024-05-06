@@ -48,6 +48,7 @@ class Functions(StrEnum):
     FOCUS = "Focus"
     CAVITY = "Cavity"
 
+
 def open_function(key: str | Functions) -> None:
     """opens function according to key"""
     gui.click(*scale(*_functions_coord[key]))

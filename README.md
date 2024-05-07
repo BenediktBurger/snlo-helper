@@ -1,5 +1,9 @@
 # SNLO-Helper
 
+[![pypi release](https://img.shields.io/pypi/v/snlo-helper.svg)](https://pypi.org/project/snlo-helper/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11125163.svg)](https://doi.org/10.5281/zenodo.11125163)
+[![Common Changelog](https://common-changelog.org/badge.svg)](https://common-changelog.org)
+
 SNLO-Helper helps to use [SNLO](https://as-photonics.com/products/snlo/) software for simulation of nonlinear optical processes in crystals.
 
 An autoclicker clicks different buttons and fills fields in order to automate SNLO simulations.

@@ -1,9 +1,7 @@
-from snlohelper import snlo
+from snlohelper.main_window import MainWindow
 
-snlo.utils.set_screenfactors()
-
-sim = snlo.TwoDMixLP()
-sim.open()
-sim.configure({"Wavelengths (nm)": [1064.5, None, None]})
-result = sim.run_and_read()
+mw = MainWindow()
+mix = mw.open_two_d_mix_lp()
+mix.configure({"Wavelengths (nm)": [1064.5, None, None]})
+result = mix.run_and_read()
 print(result)

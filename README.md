@@ -11,6 +11,13 @@ Attention:
 - The autoclicker can be interrupted by moving the mouse into the top left corner of the screen.
 
 
+Currently it supports the following functions (feel free to add more):
+- Ref. Ind.
+- 2D-mix-LP
+- 2D-mix-SP
+- Focus
+
+
 ## Installation
 
 Install it executing `pip install -e .` in this folder or via `pip install git+https://git.rwth-aachen.de/nloqo/snlo-helper.git` to download it in the background and install it.
@@ -54,4 +61,5 @@ For more examples see the `examples` folder.
 
 ## Contribution
 
-You are welcome to contribute to this library. Just open an issue for suggestions or bug reports and open a pull request for code contributions.
+You are welcome to contribute to this library.
+Just open an issue for suggestions or bug reports and open a pull request for code contributions.

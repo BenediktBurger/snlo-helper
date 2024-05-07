@@ -2,7 +2,7 @@
 name = "snlo-helper"
 dynamic = ["version"]
 authors = [
-    {name = "Benedikt Burger},
+    {name = "Benedikt Burger"},
 ]
 description = "An autoclicker to automatically configure and read SNLO."
 keywords = ["SNLO", "nonlinear optics", "simulation"]
@@ -25,10 +25,16 @@ readme = "README.md"
 full = ["numpy"]
 
 
+[project.urls]
+Repository = "https://github.com/BenediktBurger/snlo-helper"
+Issues = "https://github.com/BenediktBurger/snlo-helper/issues"
+
 [build-system]
 requires = ["setuptools>=61.0", "wheel", "setuptools_scm>=7.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools_scm]
+# write_to = "pyleco/_version.py"
 
 [tool.ruff]
 select = ["E", "F", "W"]

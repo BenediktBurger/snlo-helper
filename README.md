@@ -28,14 +28,12 @@ Install it executing `pip install -e .` in this folder or via `pip install git+h
 
 Here is a small snippet how to do a 2D mix of long pulses:
 ```
-from snlohelper import snlo
+from snlohelper.main_window import MainWindow
 
-snlo.utils.set_screenfactors()
-
-sim = snlo.TwoDMixLP()  # create a class for 2D mix
-sim.open()  # click the corresponding button to open 2D mix
-sim.configure({"Wavelengths (nm)": [1064.5, None, None]})  # configure it
-result = sim.run_and_read()  # run it
+mw = MainWindow()
+mix = mw.open_two_d_mix_lp()
+mix.configure({"Wavelengths (nm)": [1064.5, None, None]})
+result = mix.run_and_read()
 print(result)
 ```
 
@@ -47,10 +45,10 @@ For more examples see the `examples` folder.
 * The `main_window.MainWindow` class manages the main window.
 * For several functions exists a module containing a class, which in turn allows to configure the function, to run the calculation, and to extract the result.
   1. You start that class, for example `mix = two_d_mix_lp.TwoDMixLp()` or `mix = MainWindow().open_function("2D-Mix-LP")`.
-  2. You can configure it giving a configuration dictionary (the keys correspond to the names) with `mix.configure({"Wavelengths": [1064, None, None]})`
+  2. You can configure it giving a configuration dictionary (the keys correspond to the names) with `mix.configure({"Wavelengths": [1064, None, None]})`. If a value is `None`, it won't be changed.
   3. You can run it with `mix.run()`
   4. With `results = mix.read_results()` you can extract the resulting text.
-  5. With `result_dict = mix.interpret_results(results)` you get a dictionary of the data
+  5. With `result_dict = mix.interpret_results(results)` you get a dictionary of the result data
   6. There are convenience methods like `mix.run_and_read` which runs and returns the dictionary, or even `mix.configure_run_read`, which does all of above steps in one.
 
 

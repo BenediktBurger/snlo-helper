@@ -1,7 +1,17 @@
 [project]
 name = "snlo-helper"
 dynamic = ["version"]
+authors = [
+    {name = "Benedikt Burger},
+]
 description = "An autoclicker to automatically configure and read SNLO."
+keywords = ["SNLO", "nonlinear optics", "simulation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Utilities",
+]
 
 requires-python = ">=3.9"
 dependencies = [

@@ -147,7 +147,7 @@ output = []
 for i in inputs:
     print(i)
     result = mix.configure_run_read({"Energy/power (J or W)": (None, i, None)})
-    output.append(result["Output pulse energy (mJ)"][2])
+    output.append(result["Output pulse energy (mJ)"][2])  # type: ignore
 utils.alt_tab()
 print(output)
 

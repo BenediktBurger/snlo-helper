@@ -58,7 +58,6 @@ def gaussian_fit(data, print_output=False):
     return popt, sdev, serr, pcov
 
 
-
 def plot_options(
     fig,
     ax,

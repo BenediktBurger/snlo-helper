@@ -24,7 +24,7 @@ Currently it supports the following functions (feel free to add more):
 
 ## Installation
 
-Install it executing `pip install -e .` in this folder or via `pip install git+https://git.rwth-aachen.de/nloqo/snlo-helper.git` to download it in the background and install it.
+Install it executing `pip install -e .` in this folder or via `pip install snlo-helper` to download it in the background and install it.
 
 
 ## Usage

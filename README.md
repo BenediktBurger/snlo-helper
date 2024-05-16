@@ -47,6 +47,7 @@ from snlohelper.main_window import MainWindow
 mw = MainWindow()
 mix = mw.open_two_d_mix_lp()
 mix.configure({"Wavelengths (nm)": [1064.5, None, None]})
+mix.accept()
 result = mix.run_and_read()
 print(result)
 ```
@@ -60,6 +61,7 @@ For more examples see the `examples` folder.
 * For several functions exists a module containing a class, which in turn allows to configure the function, to run the calculation, and to extract the result.
   1. You start that class, for example `mix = two_d_mix_lp.TwoDMixLp()` or `mix = MainWindow().open_function("2D-Mix-LP")`.
   2. You can configure it giving a configuration dictionary (the keys correspond to the names) with `mix.configure({"Wavelengths": [1064, None, None]})`. If a value is `None`, it won't be changed.
+  3. Click accept with `mix.accept()`
   3. You can run it with `mix.run()`
   4. With `results = mix.read_results()` you can extract the resulting text.
   5. With `result_dict = mix.interpret_results(results)` you get a dictionary of the result data

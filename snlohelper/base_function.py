@@ -95,6 +95,12 @@ class BaseFunction(Protocol):
         """Interpret the results and return them as a dictionary."""
         data = {}
         for row in rows:
+            # skip empty lines
+            if not row:
+                continue
+            if row == 'ERROR: No phase match found.':
+                raise Exception('No phase match found')
+            
             text, values = row.split("=")
             content = []
             for element in values.split():

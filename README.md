@@ -21,6 +21,7 @@ Currently it supports the following functions (feel free to add more):
 - 2D-mix-LP
 - 2D-mix-SP
 - PW-OPO-BB
+- 2D-cav-LP
 - Focus
 
 

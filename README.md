@@ -17,8 +17,10 @@ Attention:
 
 Currently it supports the following functions (feel free to add more):
 - Ref. Ind.
+- Qmix
 - 2D-mix-LP
 - 2D-mix-SP
+- PW-OPO-BB
 - Focus
 
 

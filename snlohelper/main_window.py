@@ -35,6 +35,7 @@ from .two_d_mix_lp import TwoDMixLP
 from .two_d_mix_sp import TwoDMixSP
 from .q_mix import QMix
 from .pw_opo_bb import PW_OPO_BB
+from .two_d_cav_lp import TwoDCavLP
 
 
 function_classes = {
@@ -43,6 +44,7 @@ function_classes = {
     Functions.TWOD_MIX_LP: TwoDMixLP,
     Functions.TWOD_MIX_SP: TwoDMixSP,
     Functions.PW_OPO_BB: PW_OPO_BB,
+    Functions.TWOD_CAV_LP: TwoDCavLP,
     Functions.FOCUS: Focus,
 }
 
@@ -73,7 +75,7 @@ class MainWindow:
 
     def open_refractive_index(self) -> RefractiveIndex:
         return self._open_function(RefractiveIndex)
-    
+
     def open_q_mix(self) -> QMix:
         return self._open_function(QMix)
 
@@ -82,9 +84,12 @@ class MainWindow:
 
     def open_two_d_mix_sp(self) -> TwoDMixSP:
         return self._open_function(TwoDMixSP)
-    
+
     def open_pw_opo_bb(self) -> PW_OPO_BB:
         return self._open_function(PW_OPO_BB)
+
+    def open_two_d_cav_lp(self) -> TwoDCavLP:
+        return self._open_function(TwoDCavLP)
 
     def open_focus(self) -> Focus:
         return self._open_function(Focus)

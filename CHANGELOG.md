@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [0.4.0] - 2024-6-18
+
+### Added
+* Add support for 2D-cav-LP by @NoahDornhecker in https://github.com/BenediktBurger/snlo-helper/pull/4
+
+**Full Changelog**: https://github.com/BenediktBurger/snlo-helper/compare/v0.3.0...v0.4.0
+
+
 ## [0.3.0] - 2024-05-27
 
 ### Added
@@ -25,5 +33,7 @@ _Completely restructured package for easier maintenance and extension._
 _Initial release_
 
 
+[0.4.0]: https://github.com/BenediktBurger/snlo-helper/releases/tag/v0.4.0
+[0.3.0]: https://github.com/BenediktBurger/snlo-helper/releases/tag/v0.3.0
 [0.2.0]: https://github.com/BenediktBurger/snlo-helper/releases/tag/v0.2.0
 [0.1.0]: https://github.com/BenediktBurger/snlo-helper/releases/tag/v0.1.0

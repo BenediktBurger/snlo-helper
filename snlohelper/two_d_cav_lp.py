@@ -61,7 +61,6 @@ class TwoDCavLP(MixMethods):
 
     def interpret_results(self, rows: list[str]) -> dict[str, float | list[float]]:
         """Interpret the results."""
-        print(rows)
         return {
             "Right input (W W -)": [float(i) for i in rows[0].split()[6:]],
             "Left input (W W J)": [float(i) for i in rows[1].split()[6:]],
